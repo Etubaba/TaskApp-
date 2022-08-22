@@ -128,8 +128,11 @@ margin-top: 2px;
   background-color: green;
 }
 .cancel{
-  margin: 4px;
+  margin: 5px;
 
+}
+.cancel:hover{
+  color:green
 }
 
 .task-head{

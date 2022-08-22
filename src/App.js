@@ -13,6 +13,7 @@ import {
 } from "./features/taskSlice";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
+import { API_URL, BASE_URL } from "./apiUrl";
 
 function App() {
   const [taskList, setTaskList] = useState([]);
@@ -25,7 +26,7 @@ function App() {
 
   const handleLogin = () => {
     axios
-      .post("https://stage.api.sloovi.com/login", {
+      .post(`${BASE_URL}login`, {
         email: "smithwills1989@gmail.com",
         password: "12345678",
       })
@@ -54,7 +55,7 @@ function App() {
   useEffect(() => {
     // if (isLoggedIn) {
       const getTask = async () => {
-        const taskUrl = `https://stage.api.sloovi.com/task/lead_465c14d0e99e4972b6b21ffecf3dd691?company_id=${accessDetails?.company_id}`;
+        const taskUrl = `${API_URL}?company_id=${accessDetails?.company_id}`;
        axios.post(taskUrl,{
         method: 'POST',
         // url: taskUrl,
@@ -85,7 +86,7 @@ function App() {
         //   //.then((res) => console.log(`${res}`))
         //   .catch((err) => console.log(err));
       };
-      getTask();
+       getTask();
     
   }, []);
 

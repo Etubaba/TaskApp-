@@ -1,25 +1,58 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { API_URL, BASE_URL } from "../apiUrl";
 
 const TaskForm = () => {
   const [task, setTask] = useState("");
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState("");
   const [user, setUser] = useState("");
+  const [adminUsers,setAdminUsers] = useState([]);
 
   const accessDetails = useSelector((state) => state.task?.accessDetails);
   const isLoggedIn = useSelector((state) => state.task?.login);
-  const update = useSelector((state) => state.task?.update);
+  const updateTask = useSelector((state) => state.task?.update);
   const task_id = useSelector((state) => state.task?.tast_id);
   const isCompleted = useSelector((state) => state.task?.isCompleted);
 
+
+
+//fetch single task for update
+   useEffect(() => {
+    if(updateTask === 1){
+      const taskUrl = `${API_URL}/${task_id}?company_id=${accessDetails?.company_id}`;
+        const getTaskToUpdate= async()=>{
+          axios({
+            url:taskUrl,
+            method: 'GET',
+            Headers : {
+                'Authorization': 'Bearer ' + accessDetails?.token,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',          
+              },
+            Body :{ } 
+          }).then(res=>{
+            if(res.data.status==='success'){
+              setTask(res.data.results.task_msg)
+              setDate(res.data.results.task_date)
+              setTime(res.data.results.task_time)
+              setUser(res.data.results.task_user)
+            }
+          })
+        }
+
+        getTaskToUpdate()
+    }
+  }, [updateTask])
+  
+//add task or update task
   const addTask = () => {
     // check if its new task or update
-    if (update === 1) {
-      const updateURL = `https://stage.api.sloovi.com/task/lead_465c14d0e99e4972b6b21ffecf3dd691/${task_id}?company_id=${accessDetails?.company_id}`;
+    if (updateTask >= 1) {
+      const updateURL = `${API_URL}/${task_id}?company_id=${accessDetails?.company_id}`;
 
       const seconds = time.split(":");
       const timeToSeconds =
@@ -58,7 +91,7 @@ const TaskForm = () => {
       });
     } else {
       console.log('//')
-      const updateURL = `https://stage.api.sloovi.com/task/lead_465c14d0e99e4972b6b21ffecf3dd691?company_id=${accessDetails?.company_id}`;
+      const updateURL = `${API_URL}?company_id=${accessDetails?.company_id}`;
       const seconds = time.split(":");
       const timeToSeconds =
         +seconds[0] * 60 * 60 + +seconds[1] * 60 + +seconds[2];
@@ -93,8 +126,10 @@ const TaskForm = () => {
     }
   };
 
+
+  //deleteTask
   const deleteTask = () => {
-    const deleteURL = `https://stage.api.sloovi.com/task/lead_465c14d0e99e4972b6b21ffecf3dd691/${task_id}?company_id=${accessDetails?.company_id}`;
+    const deleteURL = `${API_URL}/${task_id}?company_id=${accessDetails?.company_id}`;
     axios({
       method: "DELETE",
       url: deleteURL,
@@ -110,6 +145,19 @@ const TaskForm = () => {
       }
     });
   };
+
+
+  //fetch admin users
+  useEffect(() => {
+    const getAdminUsers = async() => {
+     await axios.get(
+       `${BASE_URL}team?product=outreach&company_id=${accessDetails?.company_id}`
+     ).then(res=>setAdminUsers(res.data.results));
+    }
+    getAdminUsers()
+  }, [])
+  
+
   return (
     <div className="task-form">
       <div className="task-name">
@@ -153,7 +201,7 @@ const TaskForm = () => {
         >
           <option value="admin1">Admin1</option>
           <option value="admin2">Admin2</option>
-          <option value="admin3">Admin3</option>
+        { adminUsers?.map((user,idx) => <option key={idx} value="admin3">Admin3</option>)}
         </select>
       </div>
 
