@@ -63,7 +63,7 @@ const TaskForm = () => {
 
       const formBody = {
         assigned_user: accessDetails?.user_id,
-        task_date: date?.toISOString()?.slice(0, 10),
+        task_date: date,
         task_time: timeToSeconds,
         task_msg: task,
         time_zone: timeZoneToSeconds,
@@ -100,7 +100,7 @@ const TaskForm = () => {
       const timeZoneToSeconds = date1.getTimezoneOffset();
       const formBody = {
         assigned_user: accessDetails?.user_id,
-        task_date: date?.toISOString().slice(0, 10),
+        task_date: date,
         task_time: timeToSeconds,
         task_msg: task,
         time_zone: timeZoneToSeconds,
@@ -157,7 +157,9 @@ const TaskForm = () => {
     getAdminUsers()
   }, [])
   
-
+  const d=new Date();
+//  console.log("fgf", d.toISOString()?.slice(0, 10));
+console.log('date',date);
   return (
     <div className="task-form">
       <div className="task-name">
