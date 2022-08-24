@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   details,
   handleLogin,
+  handlePostReset,
   handlePostType,
   handleUserAccess,
   loginState,
@@ -44,60 +45,43 @@ function App() {
   };
 
   const handleLogOut = () => {
-    setUserIn(false);
     dispatch(handleUserAccess(null));
-    localStorage.removeItem("tasklogin");
-    localStorage.removeItem("taskaccess");
     toast.info("Logout completed", { position: "bottom-left" });
-  };
+  }
+  
 
   //get all task
   useEffect(() => {
-    // if (isLoggedIn) {
+    if (isLoggedIn) {
       const getTask = async () => {
-        const taskUrl = `${API_URL}?company_id=${accessDetails?.company_id}`;
-       axios.post(taskUrl,{
-        method: 'POST',
-        // url: taskUrl,
-        headers: {
-            'Authorization': "Bearer " + accessDetails?.token,
-            'Accept': "application/json",
+      const taskUrl = `${API_URL}?company_id=${accessDetails?.company_id}`;
+      await axios
+        ({
+          method: "GET",
+          // url: taskUrl,
+          url: `https://stage.api.sloovi.com/task/lead_465c14d0e99e4972b6b21ffecf3dd691?company_id=${accessDetails.company_id}`,
+          headers: {
+            Authorization: "Bearer " + accessDetails?.token,
+            Accept: "application/json",
             "Content-Type": "application/json",
           },
-
-
-       }).then(res=>setTaskList(res.data.results))
-       .catch(err=>console.log(err));
-       
-       
-        // await fetch({
-        //   method: "GET",
-        //   mode:"no-cors",
-        //   url:taskUrl,
-        //   Headers: {
-            
-        //     'Authorization': 'Bearer ' + accessDetails?.token,
-        //     'Accept': 'application/json',
-        //     'Content-Type': 'application/json',
-        //   },
-        //   credentials: "include"
-        // })
-        //   .then((res) => res.json())
-        //   //.then((res) => console.log(`${res}`))
-        //   .catch((err) => console.log(err));
+        })
+        .then((res) => setTaskList(res.data.results))
+        .catch((err) => console.log(err));
       };
        getTask();
+    }
     
-  }, []);
+  }, [accessDetails]);
 
- 
+
   return (
     <div className="layout">
       <div className="nav"></div>
       <div className="outlet">
         <div className="header">
           {" "}
-          {isLoggedIn ? (
+          {accessDetails!== null ? (
             <button onClick={handleLogOut} className="save">
               Logout
             </button>
@@ -122,7 +106,7 @@ function App() {
               ) : (
                 <GrAdd
                   onClick={() =>{ 
-                    dispatch(handlePostType(0))
+                    dispatch(handlePostReset(0))
                     dispatch(showForm(true))
                   }}
                   className="add"

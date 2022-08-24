@@ -15,17 +15,18 @@ const TaskForm = () => {
   const accessDetails = useSelector((state) => state.task?.accessDetails);
   const isLoggedIn = useSelector((state) => state.task?.login);
   const updateTask = useSelector((state) => state.task?.update);
-  const task_id = useSelector((state) => state.task?.tast_id);
+  const task_id = useSelector((state) => state.task?.task_id);
   const isCompleted = useSelector((state) => state.task?.isCompleted);
 
 
 
 //fetch single task for update
    useEffect(() => {
-    if(updateTask === 1){
+    
+    if(updateTask> 0 && task_id!==null){
       const taskUrl = `${API_URL}/${task_id}?company_id=${accessDetails?.company_id}`;
         const getTaskToUpdate= async()=>{
-          axios({
+         await axios({
             url:taskUrl,
             method: 'GET',
             Headers : {
@@ -35,6 +36,7 @@ const TaskForm = () => {
               },
             Body :{ } 
           }).then(res=>{
+            console.log('single',res)
             if(res.data.status==='success'){
               setTask(res.data.results.task_msg)
               setDate(res.data.results.task_date)
@@ -49,7 +51,7 @@ const TaskForm = () => {
   }, [updateTask])
   
 //add task or update task
-  const addTask = () => {
+  const addTask = async() => {
     // check if its new task or update
     if (updateTask >= 1) {
       const updateURL = `${API_URL}/${task_id}?company_id=${accessDetails?.company_id}`;
@@ -69,7 +71,7 @@ const TaskForm = () => {
         time_zone: timeZoneToSeconds,
         is_completed: isCompleted ? 1 : 0,
       };
-      axios({
+    await  axios({
         method: "PUT",
         url: updateURL,
         Headers: {
@@ -91,45 +93,76 @@ const TaskForm = () => {
       });
     } else {
       console.log('//')
-      const updateURL = `${API_URL}?company_id=${accessDetails?.company_id}`;
+      const postURL = `${API_URL}?company_id=${accessDetails?.company_id}`;
       const seconds = time.split(":");
       const timeToSeconds =
         +seconds[0] * 60 * 60 + +seconds[1] * 60 + +seconds[2];
 
       const date1 = new Date("August 19, 1975 23:15:30 GMT+07:00");
       const timeZoneToSeconds = date1.getTimezoneOffset();
+
+      const formData= new FormData();
+      formData.append("assigned_user", accessDetails?.user_id);
+      formData.append("task_date", date);
+      formData.append("task_time", timeToSeconds);
+      formData.append("task_msg", task);
+      formData.append("time_zone", timeZoneToSeconds);
+      formData.append("is_completed", 0);
+     
       const formBody = {
         assigned_user: accessDetails?.user_id,
         task_date: date,
         task_time: timeToSeconds,
         task_msg: task,
         time_zone: timeZoneToSeconds,
-        is_completed: isCompleted ? 1 : 0,
+        is_completed:  0,
       };
-      fetch({
+
+     await axios({
         method: "POST",
-        url: updateURL,
+        // url: postURL,
+        url: `https://stage.api.sloovi.com/task/lead_465c14d0e99e4972b6b21ffecf3dd691?company_id=${accessDetails?.company_id}`,
         Headers: {
           Authorization: "Bearer " + accessDetails?.token,
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        Body: formBody,
-      }).then(res=>res.json())
-      .then((res) => {
-        if (res.data.staus === "success") {
-          alert(res.data.message);
-        } else {
-          alert("Something went wrong");
-        }
-      });
+        Body: formData,
+      })
+        .then((res) => {
+          if (res.data.staus === "success") {
+            toast.success(res.data.message);
+          } else {
+            toast.error("Something went wrong");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      // fetch({
+      //   method: "POST",
+      //   url: updateURL,
+      //   Headers: {
+      //     Authorization: "Bearer " + accessDetails?.token,
+      //     Accept: "application/json",
+      //     "Content-Type": "application/json",
+      //   },
+      //   Body: formBody,
+      // }).then(res=>res.json())
+      // .then((res) => {
+      //   if (res.data.staus === "success") {
+      //     alert(res.data.message);
+      //   } else {
+      //     alert("Something went wrong");
+      //   }
+      // });
     }
   };
 
 
   //deleteTask
   const deleteTask = () => {
-    const deleteURL = `${API_URL}/${task_id}?company_id=${accessDetails?.company_id}`;
+ if(task_id!==null) {  const deleteURL = `${API_URL}/${task_id}?company_id=${accessDetails?.company_id}`;
     axios({
       method: "DELETE",
       url: deleteURL,
@@ -143,7 +176,8 @@ const TaskForm = () => {
       if (res.data.success) {
         toast.success("Task deleted successfully");
       }
-    });
+    })}
+    
   };
 
 
@@ -156,10 +190,13 @@ const TaskForm = () => {
     }
     getAdminUsers()
   }, [])
-  
-  const d=new Date();
-//  console.log("fgf", d.toISOString()?.slice(0, 10));
-console.log('date',date);
+
+
+ 
+
+
+  console.log('admin',adminUsers)
+
   return (
     <div className="task-form">
       <div className="task-name">

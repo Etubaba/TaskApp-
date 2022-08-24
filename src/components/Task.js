@@ -16,14 +16,18 @@ const Task = ({task,index}) => {
       <div className="task-details">
         <div className="title">
           <h4>{task?.task_msg}</h4>
-          <p>{task?.date}</p>
+          <p>{task?.task_date}</p>
         </div>
 
         <div className="action-icon">
-          <div onClick={() => {
-            dispatch(handleTaskId(task.id));
-            dispatch(showForm(true))
-            dispatch(handlePostType(1))}} className="edit">
+          <div
+            onClick={() => {
+              dispatch(handleTaskId(task.id));
+              dispatch(showForm(true));
+              dispatch(handlePostType());
+            }}
+            className="edit"
+          >
             <MdEdit />
           </div>
           <div className="bellicon">
@@ -32,8 +36,9 @@ const Task = ({task,index}) => {
             </span>
             <span
               onClick={() => {
-                dispatch(showForm(true))
-                dispatch(handleTaskId(task.id))}}
+                dispatch(showForm(true));
+                dispatch(handleTaskId(task.id));
+              }}
               className="task-icon"
             >
               <GrCheckmark />

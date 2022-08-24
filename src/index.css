@@ -181,6 +181,14 @@ border-left: 1px solid rgb(189, 186, 186);
   margin-right: 7vw;
 }
 
+.title p{
+  font-size: 12px;
+  color:red
+}
+.title h4{
+font-size: 13px;
+}
+
 .edit{
   margin-right: 10px;
   border: 0.3px solid rgb(0 0 0 / 0.2); 
