@@ -101,13 +101,13 @@ const TaskForm = () => {
       const date1 = new Date("August 19, 1975 23:15:30 GMT+07:00");
       const timeZoneToSeconds = date1.getTimezoneOffset();
 
-      const formData= new FormData();
-      formData.append("assigned_user", accessDetails?.user_id);
-      formData.append("task_date", date);
-      formData.append("task_time", timeToSeconds);
-      formData.append("task_msg", task);
-      formData.append("time_zone", timeZoneToSeconds);
-      formData.append("is_completed", 0);
+      // const formData= new FormData();
+      // formData.append("assigned_user", accessDetails?.user_id);
+      // formData.append("task_date", date);
+      // formData.append("task_time", timeToSeconds);
+      // formData.append("task_msg", task);
+      // formData.append("time_zone", timeZoneToSeconds);
+      // formData.append("is_completed", 0);
      
       const formBody = {
         assigned_user: accessDetails?.user_id,
@@ -127,7 +127,7 @@ const TaskForm = () => {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        Body: formData,
+        Body: formBody,
       })
         .then((res) => {
           if (res.data.staus === "success") {

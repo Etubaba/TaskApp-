@@ -137,7 +137,6 @@ margin-top: 2px;
 
 .task-head{
 background-color: #f5f5f5;
-
 width: 30%;
 display: flex;
 justify-content: space-between;
@@ -220,4 +219,26 @@ font-size: 13px;
     justify-content: center;
     align-items: center;
     padding: 6px;
+}
+
+
+
+
+
+@media only screen and (max-width: 600px) {
+  .task-form {
+    height: 17rem;
+    width: 95%;
+  }
+ .task-head{
+    width: 97%;
+  }
+    .added-task{
+      width: 95%;
+    }
+
+
+
+
+
 }
