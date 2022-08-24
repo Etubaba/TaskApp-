@@ -1,5 +1,5 @@
 import TaskForm from "./components/TaskForm";
-import { GrAdd,GrClose} from "react-icons/gr";
+import { GrAdd, GrClose } from "react-icons/gr";
 import Task from "./components/Task";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,10 +18,9 @@ import { API_URL, BASE_URL } from "./apiUrl";
 
 function App() {
   const [taskList, setTaskList] = useState([]);
-  // const [showForm, setShowForm] = useState(false);
-  const [userIn, setUserIn] = useState(false);
+
   const dispatch = useDispatch();
- const openForm= useSelector(state=>state.task.form)
+  const openForm = useSelector((state) => state.task.form);
   const isLoggedIn = useSelector(loginState);
   const accessDetails = useSelector(details);
 
@@ -34,7 +33,7 @@ function App() {
       .then((res) => {
         if (res.data.status === "success") {
           dispatch(handleUserAccess(res.data.results));
-          setUserIn(true);
+
           toast
             .success(res.data.message, {
               position: "bottom-left",
@@ -47,16 +46,14 @@ function App() {
   const handleLogOut = () => {
     dispatch(handleUserAccess(null));
     toast.info("Logout completed", { position: "bottom-left" });
-  }
-  
+  };
 
   //get all task
   useEffect(() => {
     if (isLoggedIn) {
       const getTask = async () => {
-      const taskUrl = `${API_URL}?company_id=${accessDetails?.company_id}`;
-      await axios
-        ({
+        const taskUrl = `${API_URL}?company_id=${accessDetails?.company_id}`;
+        await axios({
           method: "GET",
           // url: taskUrl,
           url: `https://stage.api.sloovi.com/task/lead_465c14d0e99e4972b6b21ffecf3dd691?company_id=${accessDetails.company_id}`,
@@ -66,14 +63,12 @@ function App() {
             "Content-Type": "application/json",
           },
         })
-        .then((res) => setTaskList(res.data.results))
-        .catch((err) => console.log(err));
+          .then((res) => setTaskList(res.data.results))
+          .catch((err) => console.log(err));
       };
-       getTask();
+      getTask();
     }
-    
   }, [accessDetails]);
-
 
   return (
     <div className="layout">
@@ -81,7 +76,7 @@ function App() {
       <div className="outlet">
         <div className="header">
           {" "}
-          {accessDetails!== null ? (
+          {accessDetails !== null ? (
             <button onClick={handleLogOut} className="save">
               Logout
             </button>
@@ -97,7 +92,7 @@ function App() {
               <p style={{ marginRight: "6px" }}>Task</p>{" "}
               <p>{taskList.length}</p>
             </span>
-            <div  className="icon">
+            <div className="icon">
               {openForm ? (
                 <GrClose
                   onClick={() => dispatch(showForm(false))}
@@ -105,9 +100,9 @@ function App() {
                 />
               ) : (
                 <GrAdd
-                  onClick={() =>{ 
-                    dispatch(handlePostReset(0))
-                    dispatch(showForm(true))
+                  onClick={() => {
+                    dispatch(handlePostReset(0));
+                    dispatch(showForm(true));
                   }}
                   className="add"
                 />

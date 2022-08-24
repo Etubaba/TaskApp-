@@ -6,8 +6,6 @@ import { useDispatch } from "react-redux";
 import { handlePostType, handleTaskId, showForm } from "../features/taskSlice";
 
 const Task = ({task,index}) => {
-
-
     const dispatch =useDispatch()
   return (
     <div key={index} className="added-task">

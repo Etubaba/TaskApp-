@@ -20,7 +20,7 @@ const TaskForm = () => {
 
 
 
-//fetch single task for update
+//fetch single task for update 
    useEffect(() => {
     
     if(updateTask> 0 && task_id!==null){
@@ -89,7 +89,7 @@ const TaskForm = () => {
         }
       });
     } else {
-      console.log('//')
+    
       const postURL = `${API_URL}?company_id=${accessDetails?.company_id}`;
       const seconds = time.split(":");
       const timeToSeconds =
@@ -175,9 +175,6 @@ const TaskForm = () => {
 
 
  
-
-
-  console.log('admin',adminUsers)
 
   return (
     <div className="task-form">
