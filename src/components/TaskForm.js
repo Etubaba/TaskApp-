@@ -24,24 +24,23 @@ const TaskForm = () => {
    useEffect(() => {
     
     if(updateTask> 0 && task_id!==null){
+      console.log('running')
       const taskUrl = `${API_URL}/${task_id}?company_id=${accessDetails?.company_id}`;
-        const getTaskToUpdate= async()=>{
-         await axios({
-            url:taskUrl,
-            method: 'GET',
+
+      const config={
             Headers : {
                 'Authorization': 'Bearer ' + accessDetails?.token,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',          
               },
-            Body :{ } 
-          }).then(res=>{
-            console.log('single',res)
+      }
+        const getTaskToUpdate= async()=>{
+         await axios.get(taskUrl,{},config).then(res=>{
             if(res.data.status==='success'){
               setTask(res.data.results.task_msg)
               setDate(res.data.results.task_date)
               setTime(res.data.results.task_time)
-              setUser(res.data.results.task_user)
+              setUser(res.data.results.user_id)
             }
           })
         }
@@ -64,23 +63,21 @@ const TaskForm = () => {
          const timeZoneToSeconds = date1.getTimezoneOffset();
 
       const formBody = {
-        assigned_user: accessDetails?.user_id,
+        assigned_user: user,
         task_date: date,
         task_time: timeToSeconds,
         task_msg: task,
         time_zone: timeZoneToSeconds,
         is_completed: isCompleted ? 1 : 0,
       };
-    await  axios({
-        method: "PUT",
-        url: updateURL,
+
+      const config= {
         Headers: {
           Authorization: "Bearer " + accessDetails?.token,
           Accept: "application/json",
           "Content-Type": "application/json",
-        },
-        Body: formBody,
-      }).then((res) => {
+        }}
+    await  axios.put(updateURL,formBody,config).then((res) => {
         if (res.data.staus === "success") {
           toast.success(res.data.message, {
             position: "bottom-left",
@@ -101,16 +98,8 @@ const TaskForm = () => {
       const date1 = new Date("August 19, 1975 23:15:30 GMT+07:00");
       const timeZoneToSeconds = date1.getTimezoneOffset();
 
-      // const formData= new FormData();
-      // formData.append("assigned_user", accessDetails?.user_id);
-      // formData.append("task_date", date);
-      // formData.append("task_time", timeToSeconds);
-      // formData.append("task_msg", task);
-      // formData.append("time_zone", timeZoneToSeconds);
-      // formData.append("is_completed", 0);
-     
       const formBody = {
-        assigned_user: accessDetails?.user_id,
+        assigned_user:user,
         task_date: date,
         task_time: timeToSeconds,
         task_msg: task,
@@ -118,17 +107,19 @@ const TaskForm = () => {
         is_completed:  0,
       };
 
-     await axios({
-        method: "POST",
-        // url: postURL,
-        url: `https://stage.api.sloovi.com/task/lead_465c14d0e99e4972b6b21ffecf3dd691?company_id=${accessDetails?.company_id}`,
+      const config={
         Headers: {
           Authorization: "Bearer " + accessDetails?.token,
           Accept: "application/json",
           "Content-Type": "application/json",
-        },
-        Body: formBody,
-      })
+        }
+      }
+
+     await axios.post(
+      postURL,
+      formBody,
+        config 
+      )
         .then((res) => {
           if (res.data.staus === "success") {
             toast.success(res.data.message);
@@ -139,44 +130,26 @@ const TaskForm = () => {
         .catch((err) => {
           console.error(err);
         });
-      // fetch({
-      //   method: "POST",
-      //   url: updateURL,
-      //   Headers: {
-      //     Authorization: "Bearer " + accessDetails?.token,
-      //     Accept: "application/json",
-      //     "Content-Type": "application/json",
-      //   },
-      //   Body: formBody,
-      // }).then(res=>res.json())
-      // .then((res) => {
-      //   if (res.data.staus === "success") {
-      //     alert(res.data.message);
-      //   } else {
-      //     alert("Something went wrong");
-      //   }
-      // });
     }
   };
 
 
   //deleteTask
   const deleteTask = () => {
- if(task_id!==null) {  const deleteURL = `${API_URL}/${task_id}?company_id=${accessDetails?.company_id}`;
-    axios({
-      method: "DELETE",
-      url: deleteURL,
+ if(task_id!==null) { 
+   const deleteURL = `${API_URL}/${task_id}?company_id=${accessDetails?.company_id}`;
+    axios.delete(deleteURL,
+      {
       Headers: {
         Authorization: "Bearer " + accessDetails?.token,
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: {},
     }).then((res) => {
       if (res.data.success) {
         toast.success("Task deleted successfully");
       }
-    })}
+    }).catch((err) => {console.log(err);})}
     
   };
 
@@ -184,9 +157,18 @@ const TaskForm = () => {
   //fetch admin users
   useEffect(() => {
     const getAdminUsers = async() => {
-     await axios.get(
-       `${BASE_URL}team?product=outreach&company_id=${accessDetails?.company_id}`
-     ).then(res=>setAdminUsers(res.data.results));
+     await axios
+       .get(
+         `${BASE_URL}team?product=outreach&company_id=${accessDetails?.company_id}`,
+         {
+           headers: {
+             Authorization: "Bearer " + accessDetails?.token,
+             Accept: "application/json",
+             "Content-Type": "application/json",
+           },
+         }
+       )
+       .then((res) => setAdminUsers(res.data.results.data));
     }
     getAdminUsers()
   }, [])
@@ -238,9 +220,8 @@ const TaskForm = () => {
           onChange={(e) => setUser(e.target.value)}
           id="admin"
         >
-          <option value="admin1">Admin1</option>
-          <option value="admin2">Admin2</option>
-        { adminUsers?.map((user,idx) => <option key={idx} value="admin3">Admin3</option>)}
+         
+        { adminUsers?.map((user,idx) => <option key={idx} value={user.user_id}>{user.name}</option>)}
         </select>
       </div>
 
