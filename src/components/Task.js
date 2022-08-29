@@ -11,7 +11,7 @@ const Task = ({ task, index }) => {
     <div key={index} className="p-3 border flex  md:w-[35%] w-[95%] ">
       <img src="/me.jpg" className="w-10 h-10 rounded mr-2" alt="" />
       {/* <img src={task?.image_url} alt="" /> */}
-      <div className="flex justify-between ">
+      <div className="flex  justify-between ">
         <div className="-mt-2">
           <h4 className=" text-xs md:text-base">{task?.task_msg}</h4>
           <p className="text-red-500 text-[8px] md:text-xs">
@@ -26,7 +26,7 @@ const Task = ({ task, index }) => {
               dispatch(showForm(true));
               dispatch(handlePostType());
             }}
-            className="edit p-[6px] mr-3 border  flex rounded justify-center items-center "
+            className=" hover:bg-slate-50 p-[6px] mr-3 border  flex rounded justify-center items-center "
           >
             <MdEdit />
           </div>
