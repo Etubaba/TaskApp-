@@ -71,42 +71,62 @@ function App() {
   }, [accessDetails]);
 
   return (
-    <div className="layout">
-      <div className="nav"></div>
-      <div className="outlet">
-        <div className="header">
+    <div className=" flex overflow-auto">
+      <div
+        className={
+          openForm
+            ? " h-auto bg-[#323E4D] w-[15%]"
+            : " h-screen bg-[#323E4D] w-[15%]"
+        }
+      ></div>
+      <div
+        className={
+          openForm
+            ? "h-auto w-[85%] bg-[#FAFAFA]"
+            : "w-[85%] h-screen bg-[#FAFAFA]"
+        }
+      >
+        <div className="w-full h-8 shadow">
           {" "}
           {accessDetails !== null ? (
-            <button onClick={handleLogOut} className="save">
+            <button
+              onClick={handleLogOut}
+              className="bg-green-600 text-sm hover:bg-green-500 ml-3 text-white px-4  rounded-md mt-1 cursor-pointer"
+            >
               Logout
             </button>
           ) : (
-            <button onClick={handleLogin} className="save">
+            <button
+              onClick={handleLogin}
+              className="bg-green-600 text-sm hover:bg-green-500 ml-3 text-white px-4  rounded-md mt-1 cursor-pointer"
+            >
               Login
             </button>
           )}
         </div>
-        <div className="main">
-          <div className="task-head">
-            <span style={{ display: "flex" }}>
-              <p style={{ marginRight: "6px" }}>Task</p>{" "}
-              <p>{taskList.length}</p>
+        <div className="p-5">
+          <div className="flex pr-2 pl-2 justify-between w-[95%] md:w-[35%] bg-[#f5f5f5]">
+            <span className="flex text-sm space-x-2 mt-1">
+              <p>Task</p> <p>{taskList.length}</p>
             </span>
-            <div className="icon">
-              {openForm ? (
-                <GrClose
-                  onClick={() => dispatch(showForm(false))}
-                  className="add"
-                />
-              ) : (
-                <GrAdd
-                  onClick={() => {
-                    dispatch(handlePostReset(0));
-                    dispatch(showForm(true));
-                  }}
-                  className="add"
-                />
-              )}
+
+            <div>
+              <div className="flex border p-1 justify-center items-center ">
+                {openForm ? (
+                  <GrClose
+                    onClick={() => dispatch(showForm(false))}
+                    className="add"
+                  />
+                ) : (
+                  <GrAdd
+                    onClick={() => {
+                      dispatch(handlePostReset(0));
+                      dispatch(showForm(true));
+                    }}
+                    className="add"
+                  />
+                )}
+              </div>
             </div>
           </div>
           {openForm && <TaskForm />}

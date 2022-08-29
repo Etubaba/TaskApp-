@@ -176,32 +176,35 @@ const TaskForm = () => {
   }, []);
 
   return (
-    <div className="task-form">
-      <div className="task-name">
+    <div className="h-[19rem] w-[95%] md:h-80 md:w-[35%] p-3 bg-[#EDF7FC]">
+      <div className="flex flex-col mb-4">
         <label htmlFor="task-name">Task Description</label>
         <input
           value={task}
           onChange={(e) => setTask(e.target.value)}
           id="task-name"
           type="text"
+          className=" p-2 my-1 outline-none"
           placeholder=" Enter Task"
         />
       </div>
-      <div className="task-description">
-        <div className="date">
+      <div className="flex space-x-3 md:space-x-5 w-full mb-3">
+        <div className="w-[45%]">
           <label htmlFor="date">Date </label>
           <input
             value={date}
             onChange={(e) => setDate(e.target.value)}
             id="date"
+            className="p-2 my-1 outline-none"
             type="date"
           />
         </div>
 
-        <div className="time">
+        <div className="w-[45%]">
           <label htmlFor="time">Time</label>
           <input
             value={time}
+            className=" my-1 outline-none"
             onChange={(e) => setTime(e.target.value)}
             id="time"
             type="time"
@@ -209,10 +212,11 @@ const TaskForm = () => {
         </div>
       </div>
 
-      <div className="user">
+      <div className="flex flex-col mb-4">
         <label htmlFor="admin">Assigned User</label>
         <select
           value={user}
+          className="p-2 outline-none"
           onChange={(e) => setUser(e.target.value)}
           id="admin"
         >
@@ -224,11 +228,14 @@ const TaskForm = () => {
         </select>
       </div>
 
-      <div className="actions">
-        <MdDelete onClick={deleteTask} style={{ marginTop: "5px" }} />
-        <div className="buttons">
-          <p className="cancel">Cancel</p>
-          <button onClick={addTask} className="save">
+      <div className="flex justify-between">
+        <MdDelete onClick={deleteTask} className="mt-2" />
+        <div className="flex justify-end items-end">
+          <p className="mt-2 mx-[5px]">Cancel</p>
+          <button
+            onClick={addTask}
+            className="bg-green-600 text-sm hover:bg-green-500 ml-3 text-white px-4  py-1 rounded-sm mt-1 cursor-pointer"
+          >
             Save
           </button>
         </div>
