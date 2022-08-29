@@ -86,19 +86,19 @@ function App() {
             : "w-[85%] h-screen bg-[#FAFAFA]"
         }
       >
-        <div className="w-full h-8 shadow">
+        <div className="w-full h-10 shadow">
           {" "}
           {accessDetails !== null ? (
             <button
               onClick={handleLogOut}
-              className="bg-green-600 text-sm hover:bg-green-500 ml-3 text-white px-4  rounded-md mt-1 cursor-pointer"
+              className="bg-green-600 py-1 text-sm hover:bg-green-500 ml-3 text-white px-4  rounded-md mt-1 cursor-pointer"
             >
               Logout
             </button>
           ) : (
             <button
               onClick={handleLogin}
-              className="bg-green-600 text-sm hover:bg-green-500 ml-3 text-white px-4  rounded-md mt-1 cursor-pointer"
+              className="bg-green-600 p-1 text-sm hover:bg-green-500 ml-3 text-white px-4  rounded-md mt-1 cursor-pointer"
             >
               Login
             </button>
